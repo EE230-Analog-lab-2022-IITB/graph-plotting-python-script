@@ -3,17 +3,18 @@ import numpy as np
 import math
 
 #_______________________________________________________________________________________________________________
-filename     = "piecewise_linear_3_resistors"              #filename : This is name of the file containing the x and y values
+filename     = "4_columns"              #filename : This is name of the file containing the x and y values
 Plot_Title   =  "This is a plot title"
 x_axis_label = "x_axis_label"
 y_axis_label = "y_axis_label"
 number_of_curves_in_plot = 3
 legend_list = ["a","b","c"]
-LOG_OF_X = True                         #LOG_OF_X : x axis will be logarithmic if LOG_OF_X is 'True'
+LOG_OF_X = False                         #LOG_OF_X : x axis will be logarithmic if LOG_OF_X is 'True'
 is_first_order_derivative = False
 #_______________________________________________________________________________________________________________
 
-
+x_axis_colum_number = 1                     #this is column no. from which actual data start. It lowest value is 0.
+y_axis_column_start = x_axis_colum_number+1  #After x axis column, all further columns will be y axis columns
 
 
 global readings
@@ -45,6 +46,7 @@ def read_file(axis_index):
 
         # seperate three numbers from line -> Index x_value y_value
         readings = [float(d) for d in x.split()]
+        #print("readings-->",readings)
         try:
             axis_readings.append(readings[axis_index])
         except:
@@ -64,13 +66,13 @@ def first_order_derivative(x_array, y_array):
     y_array_der = np.zeros(len(x_array) - 1)
 
     y_array_der = np.diff(y_array) / np.diff(x_array)
-    print("len(y_array_der)=", len(y_array_der[0]))
+    #print("len(y_array_der)=", len(y_array_der[0]))
 
     for i in range(len(x_array) -1):
         x_temp = (x_array[i] + x_array[i + 1]) / 2
         x_array_der[i] = x_temp
 
-    print("len(x_array_final)=", len(x_array_final))
+    #print("len(x_array_final)=", len(x_array_final))
 
     return  x_array_der,y_array_der
 
@@ -89,9 +91,12 @@ if __name__ == '__main__':
 
 
     #Read file and get x and y axis values in following two arrays
-    x_readings = read_file(1)
+    x_readings = read_file(x_axis_colum_number)
+
+    #print("x_readings-->",x_readings)
+
     y_readings = []
-    for column in range(2, number_of_curves_in_plot + 2):
+    for column in range(y_axis_column_start, number_of_curves_in_plot + y_axis_column_start):
         y_readings.append(read_file(column))
         #print("y_readings==",y_readings)
 
